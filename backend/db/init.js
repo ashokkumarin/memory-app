@@ -1,0 +1,11 @@
+const db = require("./db");
+
+db.run(`
+CREATE TABLE IF NOT EXISTS memory (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  key TEXT UNIQUE,
+  value TEXT,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+)
+`);
