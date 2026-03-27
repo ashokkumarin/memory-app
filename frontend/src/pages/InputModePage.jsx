@@ -1,18 +1,21 @@
 import { useEffect, useState } from "react";
 import { getMemory, saveMemory, deleteMemory } from "../services/api";
+import InputBar from "../components/memory/InputBar";
+import MemoryRow from "../components/memory/MemoryRow";
+import { styles } from "../styles/inputModeStyles";
 
 export default function InputModePage() {
   const [list, setList] = useState([]);
   const [keyVal, setKeyVal] = useState("");
   const [value, setValue] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  // ✅ FETCH
   const fetchData = async () => {
     try {
       const data = await getMemory();
       setList(Array.isArray(data) ? data : []);
     } catch (err) {
-      console.error(err);
+      console.error("Failed to fetch memory:", err);
     }
   };
 
@@ -20,62 +23,66 @@ export default function InputModePage() {
     fetchData();
   }, []);
 
-  // ✅ SAVE FUNCTION (IMPORTANT — MUST EXIST)
+  const resetForm = () => {
+    setKeyVal("");
+    setValue("");
+  };
+
   const handleSave = async () => {
+    if (!keyVal.trim() || !value.trim()) return;
+
     try {
+      setLoading(true);
       await saveMemory({ key: keyVal, value });
-      setKeyVal("");
-      setValue("");
-      fetchData();
+      resetForm();
+      await fetchData();
     } catch (err) {
-      console.error(err);
+      console.error("Failed to save memory:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleEdit = (item) => {
+    setKeyVal(item.key);
+    setValue(item.value);
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      setLoading(true);
+      await deleteMemory(id);
+      await fetchData();
+    } catch (err) {
+      console.error("Failed to delete memory:", err);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div style={{ padding: "20px", height: "100%", overflow: "auto" }}>
-      <h2>Settings</h2>
+    <div style={styles.page}>
+      <h2 style={styles.heading}>Settings</h2>
 
-      <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
-        <input
-          value={keyVal}
-          onChange={(e) => setKeyVal(e.target.value)}
-          placeholder="Key"
-        />
+      <InputBar
+        keyVal={keyVal}
+        value={value}
+        setKeyVal={setKeyVal}
+        setValue={setValue}
+        onSave={handleSave}
+        loading={loading}
+      />
 
-        <input
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
-          placeholder="Value"
-        />
-
-        {/* ✅ FIX HERE */}
-        <button onClick={handleSave}>Save</button>
+      <div style={styles.list}>
+        {list.map((item) => (
+          <MemoryRow
+            key={item.id}
+            item={item}
+            onEdit={() => handleEdit(item)}
+            onDelete={() => handleDelete(item.id)}
+          />
+        ))}
       </div>
-
-      {list.map((item) => (
-        <div key={item.id} style={{ display: "flex", justifyContent: "space-between" }}>
-          <span>
-            <b>{item.key}</b>: {item.value}
-          </span>
-
-          <div>
-            <button onClick={() => {
-              setKeyVal(item.key);
-              setValue(item.value);
-            }}>
-              Edit
-            </button>
-
-            <button onClick={async () => {
-              await deleteMemory(item.id);
-              fetchData();
-            }}>
-              Delete
-            </button>
-          </div>
-        </div>
-      ))}
     </div>
   );
 }

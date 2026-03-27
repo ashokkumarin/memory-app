@@ -12,6 +12,8 @@ export default function ChatContainer() {
     setMessages((prev) => [...prev, { role: "user", text }]);
     setLoading(true);
 
+    console.log("SENDING QUERY:", text);
+
     const data = await sendQuery(text);
 
     setLoading(false);

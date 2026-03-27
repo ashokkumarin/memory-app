@@ -5,6 +5,8 @@ const db = require("../db/db");
 exports.query = async (req, res) => {
   const { question } = req.body;
 
+  console.log("QUESTION:", question);
+
   try {
     const queryEmbedding = await getEmbedding(question);
 
@@ -29,6 +31,8 @@ exports.query = async (req, res) => {
       if (!bestMatch || bestScore < 0.7) {
         return res.send({ answer: "No data available" });
       }
+
+      console.log("SENDING RESPONSE:", bestMatch);
 
       return res.send({
         answer: `${bestMatch.key}: ${bestMatch.value}`,

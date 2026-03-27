@@ -3,10 +3,13 @@ const service = require("../services/memoryService");
 exports.addOrUpdate = async (req, res) => {
   const { key, value } = req.body;
 
-  service.addOrUpdate(key, value, (err) => {
-    if (err) return res.status(500).send(err);
+  try {
+    await service.addOrUpdate(key, value);
     res.send({ success: true });
-  });
+  } catch (err) {
+    console.error("ADD/UPDATE ERROR:", err);
+    res.status(500).send(err.message || err);
+  }
 };
 
 exports.getAll = async (req, res) => {
@@ -19,10 +22,13 @@ exports.getAll = async (req, res) => {
   }
 };
 
-exports.delete = (req, res) => {
-  service.delete(req.params.id, (err) => {
-    if (err) return res.status(500).send(err);
+exports.delete = async (req, res) => {
+  try {
+    await service.delete(req.params.id);
     res.send({ success: true });
-  });
+  } catch (err) {
+    console.error("DELETE ERROR:", err);
+    res.status(500).send(err.message || err);
+  }
 };
 
