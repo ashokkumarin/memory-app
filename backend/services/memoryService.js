@@ -1,4 +1,4 @@
-const { getEmbedding } = require("./embeddingService");
+const db = require("../db/db"); // ✅ FIX
 
 exports.getAll = () => {
   return new Promise((resolve, reject) => {
@@ -9,15 +9,13 @@ exports.getAll = () => {
   });
 };
 
-exports.addOrUpdate = async (key, value, callback) => {
-  try {
-    const text = `${key} ${value}`;
-    console.log("Generating embedding for:", text);
+exports.addOrUpdate = async (key, value) => {
+  const { getEmbedding } = require("./embeddingService");
 
-    const embedding = await getEmbedding(text);
+  const text = `${key} ${value}`;
+  const embedding = await getEmbedding(text);
 
-    console.log("Embedding length:", embedding.length); // 👈 debug
-
+  return new Promise((resolve, reject) => {
     db.run(
       `INSERT INTO memory (key, value, embedding)
        VALUES (?, ?, ?)
@@ -26,12 +24,12 @@ exports.addOrUpdate = async (key, value, callback) => {
        embedding=excluded.embedding,
        updated_at=CURRENT_TIMESTAMP`,
       [key, value, JSON.stringify(embedding)],
-      callback
+      function (err) {
+        if (err) reject(err);
+        else resolve();
+      }
     );
-  } catch (err) {
-    console.error("Embedding error:", err); // 👈 IMPORTANT
-    callback(err);
-  }
+  });
 };
 
 exports.delete = (id) => {

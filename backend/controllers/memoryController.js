@@ -14,9 +14,11 @@ exports.getAll = async (req, res) => {
     const data = await service.getAll();
     res.send(data);
   } catch (err) {
+    console.error("GET /memory error:", err);
     res.status(500).send(err);
   }
 };
+
 exports.delete = (req, res) => {
   service.delete(req.params.id, (err) => {
     if (err) return res.status(500).send(err);
