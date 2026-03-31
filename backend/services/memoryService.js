@@ -12,7 +12,7 @@ exports.getAll = () => {
 exports.addOrUpdate = async (key, value) => {
   const { getEmbedding } = require("./embeddingService");
 
-  const text = `${key} ${value}`;
+  const text = `Key: ${key}. Value: ${value}. This is a stored memory.`;
   const embedding = await getEmbedding(text);
 
   return new Promise((resolve, reject) => {

@@ -9,12 +9,19 @@ export default function InputBar({
   onSave,
   loading,
 }) {
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" && !loading && keyVal.trim() && value.trim()) {
+      onSave();
+    }
+  };
+
   return (
     <div style={styles.inputBar}>
       <input
         style={styles.keyInput}
         value={keyVal}
         onChange={(e) => setKeyVal(e.target.value)}
+        onKeyDown={handleKeyDown}
         placeholder="Key"
       />
 
@@ -22,6 +29,7 @@ export default function InputBar({
         style={styles.valueInput}
         value={value}
         onChange={(e) => setValue(e.target.value)}
+        onKeyDown={handleKeyDown}
         placeholder="Value"
       />
 

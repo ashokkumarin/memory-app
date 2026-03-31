@@ -13,18 +13,22 @@ export const buttonVariants = {
 
 export const styles = {
   page: {
+    display: "flex",
+    flexDirection: "column",
     padding: "20px",
     height: "100%",
-    overflow: "auto",
+    overflow: "hidden",
   },
   heading: {
     marginBottom: "16px",
+    flexShrink: 0,
   },
   inputBar: {
     display: "flex",
     gap: "10px",
     marginBottom: "20px",
-    width: "100%"
+    width: "100%",
+    flexShrink: 0,
   },
   keyInput: {
     flex: "0 0 40%",
@@ -45,6 +49,8 @@ export const styles = {
     flexDirection: "column",
     gap: "12px",
     alignItems: "right",
+    flex: 1,
+    overflow: "auto",
   },
   row: {
     display: "flex",
