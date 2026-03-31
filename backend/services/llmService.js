@@ -18,8 +18,8 @@ ${question}
 Answer:
 `;
 
-    const res = await axios.post("http://localhost:11434/api/generate", {
-      model: "phi3",
+    const res = await axios.post(`${process.env.OLLAMA_URL}/api/generate`, {
+      model: process.env.OLLAMA_LLM_MODEL || "phi3",
       prompt,
       stream: false,
     });

@@ -1,5 +1,5 @@
 export const sendQuery = async (question) => {
-  const res = await fetch("http://localhost:3000/query", {
+  const res = await fetch(`${import.meta.env.VITE_API_URL}/query`, {
     method: "POST",
     headers: {"Content-Type": "application/json"},
     body: JSON.stringify({ question }),
@@ -8,12 +8,13 @@ export const sendQuery = async (question) => {
 };
 
 export const getMemory = async () => {
-  const res = await fetch("http://localhost:3000/memory");
+  console.log("Fetching memory from API..."); // 👈 debug
+  const res = await fetch(`${import.meta.env.VITE_API_URL}/memory`);
   return res.json();
 };
 
 export const saveMemory = async (data) => {
-  await fetch("http://localhost:3000/memory", {
+  await fetch(`${import.meta.env.VITE_API_URL}/memory`, {
     method: "POST",
     headers: {"Content-Type": "application/json"},
     body: JSON.stringify(data),
@@ -21,7 +22,7 @@ export const saveMemory = async (data) => {
 };
 
 export const deleteMemory = async (id) => {
-  await fetch(`http://localhost:3000/memory/${id}`, {
+  await fetch(`${import.meta.env.VITE_API_URL}/memory/${id}`, {
     method: "DELETE",
   });
 };

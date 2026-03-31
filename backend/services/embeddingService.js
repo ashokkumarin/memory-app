@@ -11,8 +11,8 @@ exports.getEmbedding = async (text) => {
       prompt: text,
     }),
   }); */
-  const res = await axios.post("http://localhost:11434/api/embeddings", {
-    model: "nomic-embed-text",
+  const res = await axios.post(`${process.env.OLLAMA_URL}/api/embeddings`, {
+    model: process.env.OLLAMA_EMBED_MODEL || "nomic-embed-text",
     prompt: text,
   });
 
